@@ -3,14 +3,17 @@
 // Define the options page HTML markup
 function hide_menu_items_options_page()
 {
-    echo '<div class="wrap">';
-    echo '<h1>Hide Menu Items Settings</h1>';
-    echo '<form method="post" action="options.php">';
-    settings_fields('hide_menu_items_options_group');   // This is the option group name
-    do_settings_sections('hide-menu-items');            // This is the page slug
-    submit_button();
-    echo '</form>';
-    echo '</div>';
+?> <div class="wrap">
+        <h1>Hide Menu Items Settings</h1>
+        <? settings_errors(); ?>
+        <form method="post" action="options.php">
+            <?php settings_fields('hide_menu_items_options_group');   // This is the option group name 
+            do_settings_sections('hide-menu-items'); // This is the page slug 
+            submit_button(); ?>
+        </form>
+    </div>
+
+<?php
 }
 
 // Define the settings sections and fields
@@ -114,12 +117,6 @@ function hide_menu_items_menu_item_input()
         <?php $checked = in_array($menu_item->title, $selected_items) ? 'checked' : ''; ?>
         <input type="checkbox" name="hide_menu_items_options_menu_item[]" id="<?php echo $menu_item->ID; ?>" value="<?php echo $menu_item->title; ?>" <?php echo $checked; ?>>
         <label for="<?php echo $menu_item->ID; ?>"><?php echo $menu_item->title; ?></label>
-    <?php endforeach; ?>
-
-    <?php foreach ($selected_items as $menu_item) : ?>
-        <?php $checked = in_array($menu_item, $selected_items) ? 'checked' : ''; ?>
-        <input type="checkbox" name="hide_menu_items_options_menu_item[]" id="<?php echo $menu_item; ?>" value="<?php echo $menu_item; ?>" <?php echo $checked; ?>>
-        <label for="<?php echo $menu_item; ?>"><?php echo $menu_item; ?></label>
     <?php endforeach; ?>
 
 <?php
