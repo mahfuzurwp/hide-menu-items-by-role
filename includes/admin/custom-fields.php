@@ -20,8 +20,7 @@ add_action('wp_nav_menu_item_custom_fields', 'hmi_custom_menu_item_fields', 10, 
 // Save the custom field for "user role"
 function hmi_save_custom_menu_item_fields($menu_id, $menu_item_db_id, $menu_item_data)
 {
-    $menu_item = get_post($menu_item_db_id);
-
+    // Save the menu item's user roles
     if (isset($_POST['menu-item-user-roles'][$menu_item_db_id])) {
         $user_roles = $_POST['menu-item-user-roles'][$menu_item_db_id];
     } else {
