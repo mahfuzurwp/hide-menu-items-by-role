@@ -4,8 +4,8 @@ function hmi_hide_menu_items_based_on_role($items, $args)
     // Get the menu ID from the $args parameter
     $menu_id = $args->menu->term_id;
 
-    // Get the user role from the plugin settings
-    $user_role = get_option('hide_menu_items_options_user_role');
+    // Get the current user's roles
+    $user_roles = wp_get_current_user()->roles;
 
     // Get the selected menu items for this menu ID
     $selected_items = array();
@@ -18,11 +18,14 @@ function hmi_hide_menu_items_based_on_role($items, $args)
         }
     }
 
-    // If the user is an $user_role and the current menu has selected items, hide them
-    if (in_array($user_role, wp_get_current_user()->roles) && !empty($selected_items)) {
+    // If the user has selected user roles for this menu, hide the menu items for those roles
+    if (!empty($selected_items)) {
         foreach ($items as $key => $item) {
-            if (isset($selected_items[$item->title]) && in_array($user_role, $selected_items[$item->title])) {
-                unset($items[$key]);
+            if (isset($selected_items[$item->title])) {
+                $item_user_roles = $selected_items[$item->title];
+                if (!empty(array_intersect($user_roles, $item_user_roles))) {
+                    unset($items[$key]);
+                }
             }
         }
     }
