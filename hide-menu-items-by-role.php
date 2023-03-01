@@ -21,7 +21,7 @@ define('HMI_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Include required files
 require_once HMI_PLUGIN_DIR . 'includes/functions.php';
-require_once HMI_PLUGIN_DIR . 'includes/admin/hide-menu-items-admin.php';
+require_once plugin_dir_path(__FILE__) . 'includes/admin/custom-fields.php';
 
 // Initialize the plugin
 add_action('plugins_loaded', 'hmi_init');
@@ -29,12 +29,3 @@ function hmi_init()
 {
     // Initialize the plugin code here
 }
-
-
-function hide_menu_items_settings_link($links)
-{
-    $settings_link = '<a href="' . admin_url('options-general.php?page=hide-menu-items') . '">Settings</a>';
-    array_unshift($links, $settings_link);
-    return $links;
-}
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'hide_menu_items_settings_link');
