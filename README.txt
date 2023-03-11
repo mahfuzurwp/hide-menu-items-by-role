@@ -35,8 +35,8 @@ Yes, you can select multiple user roles that should not be able to see a menu it
 When you create or edit a menu item, a new field will appear where you can check/uncheck the user roles.
 
 == Screenshots ==
-1. Description of the first screenshot. 
-1. Description of the second screenshot. 
+1. Plugin shown in plugins page.    plugins_page.jpeg
+2. Adding user roles in menus page. select_roles.jpeg 
 
 == Changelog ==
 
