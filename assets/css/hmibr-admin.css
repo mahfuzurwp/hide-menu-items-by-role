@@ -1,0 +1,7 @@
+.hmibr-disabled {
+    opacity: 0.6;
+}
+.hmibr-disabled select,
+.hmibr-disabled input[type="checkbox"] {
+    cursor: not-allowed;
+}

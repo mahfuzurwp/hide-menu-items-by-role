@@ -1,0 +1,27 @@
+# WordPress
+wp-content/uploads/
+wp-content/cache/
+wp-content/backups/
+wp-content/plugins/hello.php
+wp-content/themes/hello/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development tools
+node_modules/
+npm-debug.log
+yarn-error.log
+composer.lock
+
+# Build artifacts
+dist/
+build/
