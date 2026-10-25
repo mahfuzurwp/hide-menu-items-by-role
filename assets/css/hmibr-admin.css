@@ -25,6 +25,12 @@
     max-width: 480px;
 }
 
+/* Keep the item bar the same outer width as the settings box above it:
+ * 470 + 15px side padding + 1px border = 502px, matching 480 + 10px + 1px. */
+#menu-to-edit .menu-item-bar .menu-item-handle {
+    max-width: 470px;
+}
+
 /* -------------------------------------------------------------------------
  * Panel shell
  * ---------------------------------------------------------------------- */
@@ -210,6 +216,22 @@
     gap: 10px 12px;
     align-items: center;
     margin: 0;
+}
+
+/* Shown while a role rule is active but no role is selected, i.e. the rule does nothing */
+.hmibr-panel .hmibr-hint {
+    margin: 12px 0 0;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #50575e;
+    background-color: #f0f6fc;
+    border-left: 3px solid #72aee6;
+    border-radius: 3px;
+}
+
+.hmibr-panel .hmibr-hint[hidden] {
+    display: none;
 }
 
 .hmibr-panel .hmibr-role {

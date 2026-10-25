@@ -3,11 +3,11 @@ schema_version: 1
 locale: en-US
 branch: master
 nodes_managed: true
-exported_at: "2026-10-25T11:09:12Z"
+exported_at: "2026-10-25T15:57:37Z"
 modules:
     "":
-        dir_name: Hide Menu Items by Role WordPress Plugin
-        title: Hide Menu Items by Role WordPress Plugin
+        dir_name: Hide Menu Items By Role (WordPress Plugin)
+        title: Hide Menu Items By Role (WordPress Plugin)
         scope:
             - assets/
             - includes/

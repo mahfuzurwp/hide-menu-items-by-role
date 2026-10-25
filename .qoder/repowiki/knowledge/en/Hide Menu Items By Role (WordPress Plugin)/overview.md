@@ -1,0 +1,1 @@
+WordPress plugin that lets editors restrict navigation menu item visibility per user role and login state, with an admin panel in the menu editor and runtime filtering via core filters.

@@ -1,4 +1,9 @@
 <?php
+// Prevent direct access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 function hmi_hide_menu_items_based_on_role($items, $args)
 {
     // Get the menu ID from the $args parameter
@@ -20,6 +25,12 @@ function hmi_hide_menu_items_based_on_role($items, $args)
         }
         if ($login_state === 'logged_out' && is_user_logged_in()) {
             unset($items[$key]);
+            continue;
+        }
+
+        // Only guests reach this point on a logged-out item, and guests have no role
+        // to match, so role rules are skipped (they are disabled in the editor too).
+        if ($login_state === 'logged_out') {
             continue;
         }
         

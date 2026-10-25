@@ -2,16 +2,21 @@
 /**
  * Plugin Name: Hide Menu Items by Role
  * Plugin URI: https://wordpress.org/plugins/hide-menu-items-by-role
- * Description: Hide specific navigation menu items based on user role
- * Version: 2.0.0
+ * Description: Control who sees each navigation menu item, right from the menu editor.
+ * Version: 2.1.0
  * Requires at least: 5.0
  * Requires PHP: 7.0
  * Author: Mahfuzur Rahman
- * Author URI: https://www.linkedin.com/in/mahfuzd
+ * Author URI: https://www.linkedin.com/in/mahfuzurwp/
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: hmibyrole
  */
+
+// Prevent direct access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // Define constants
 define('HMI_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -31,14 +36,14 @@ function hmi_enqueue_admin_assets() {
             HMI_PLUGIN_URL . 'assets/css/hmibr-admin.css',
             array(),
             // Use the file modification time so browser caches refresh after updates.
-            file_exists($css_file) ? (string) filemtime($css_file) : '2.0.0'
+            file_exists($css_file) ? (string) filemtime($css_file) : '2.1.0'
         );
         
         wp_enqueue_script(
             'hmibr-admin-script',
             HMI_PLUGIN_URL . 'assets/js/hmibr-admin.js',
             array('jquery'),
-            file_exists($js_file) ? (string) filemtime($js_file) : '2.0.0',
+            file_exists($js_file) ? (string) filemtime($js_file) : '2.1.0',
             true
         );
     }

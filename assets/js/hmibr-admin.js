@@ -4,7 +4,8 @@
 
 jQuery(document).ready(function($) {
     /**
-     * Sync the locked state of the mode and role fields for one menu item.
+     * Sync the locked state of the mode and role fields for one menu item, and
+     * show or hide the "no roles selected" reminder.
      *
      * @param {string} itemId Menu item database ID.
      */
@@ -20,8 +21,13 @@ jQuery(document).ready(function($) {
 
         // Roles are locked for logged-out only, and when the item is shown to all roles.
         var rolesDisabled = isLoggedOutOnly || isAllRoles;
-        $('.edit-menu-item-custom[name*="menu-item-user-roles[' + itemId + ']"]').prop('disabled', rolesDisabled);
+        var $roleBoxes = $('.edit-menu-item-custom[name*="menu-item-user-roles[' + itemId + ']"]');
+        $roleBoxes.prop('disabled', rolesDisabled);
         $('#edit-menu-item-user-roles-' + itemId).toggleClass('hmibr-disabled', rolesDisabled);
+
+        // Remind editors that an active role rule does nothing until a role is picked.
+        var hasSelectedRole = $roleBoxes.filter(':checked').length > 0;
+        $('#edit-menu-item-user-roles-hint-' + itemId).prop('hidden', rolesDisabled || hasSelectedRole);
     }
 
     /**
@@ -36,8 +42,8 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // Update the item whenever its user status or role visibility changes.
-    $(document).on('change', 'select[name^="hmibr_login_state["], select[name^="hmibr_mode["]', function() {
+    // Update the item whenever its user status, role visibility, or roles change.
+    $(document).on('change', 'select[name^="hmibr_login_state["], select[name^="hmibr_mode["], input[name^="menu-item-user-roles["]', function() {
         var matches = $(this).attr('name').match(/\[(\d+)\]/);
         if (matches) {
             updateItemFields(matches[1]);

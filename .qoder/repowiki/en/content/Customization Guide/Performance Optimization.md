@@ -8,6 +8,13 @@
 - [README.txt](file://README.txt)
 </cite>
 
+## Update Summary
+**Changes Made**
+- Updated asset management section to reflect enhanced cache-busting implementation
+- Added details about optimized loading only on nav-menus.php page
+- Enhanced performance considerations for asset delivery
+- Updated bootstrap and asset loading architecture diagram
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
@@ -25,7 +32,7 @@ This document provides performance-focused guidance for the Hide Menu Items by R
 
 ## Project Structure
 The plugin is organized into a small set of focused files:
-- Plugin bootstrap and asset loading
+- Plugin bootstrap and asset loading with enhanced cache-busting
 - Core menu filtering logic
 - Admin UI for configuring visibility per menu item
 - Documentation and metadata
@@ -40,31 +47,32 @@ D -.-> C
 ```
 
 **Diagram sources**
-- [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
-- [custom-fields.php:1-147](file://includes/admin/custom-fields.php#L1-L147)
-- [README.txt:1-100](file://README.txt#L1-L100)
+- [hide-menu-items-by-role.php:16-58](file://hide-menu-items-by-role.php#L16-L58)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
+- [custom-fields.php:1-126](file://includes/admin/custom-fields.php#L1-L126)
+- [README.txt:1-113](file://README.txt#L1-L113)
 
 **Section sources**
-- [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
-- [custom-fields.php:1-147](file://includes/admin/custom-fields.php#L1-L147)
-- [README.txt:1-100](file://README.txt#L1-L100)
+- [hide-menu-items-by-role.php:16-58](file://hide-menu-items-by-role.php#L16-L58)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
+- [custom-fields.php:1-126](file://includes/admin/custom-fields.php#L1-L126)
+- [README.txt:1-113](file://README.txt#L1-L113)
 
 ## Core Components
-- Plugin bootstrap: defines constants, enqueues admin assets on the nav-menus screen, and includes core files.
-- Core filter: hooks into WordPress’s menu rendering pipeline to hide or show items based on login state and user roles.
+- Plugin bootstrap: defines constants, enqueues admin assets with enhanced cache-busting on the nav-menus screen, and includes core files.
+- Core filter: hooks into WordPress's menu rendering pipeline to hide or show items based on login state and user roles.
 - Admin fields: adds configuration UI for visibility settings and persists them as post meta for each menu item.
 
 Key responsibilities:
 - Early-exit checks for login state to avoid unnecessary role processing when not needed.
 - Reading and applying mode (hide/show) against configured roles.
 - Persisting and validating user-selected roles and modes.
+- Optimized asset loading with proper cache-busting using file modification times.
 
 **Section sources**
-- [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
-- [custom-fields.php:1-147](file://includes/admin/custom-fields.php#L1-L147)
+- [hide-menu-items-by-role.php:16-58](file://hide-menu-items-by-role.php#L16-L58)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
+- [custom-fields.php:1-126](file://includes/admin/custom-fields.php#L1-L126)
 
 ## Architecture Overview
 The plugin integrates with WordPress at two points:
@@ -79,7 +87,7 @@ participant AdminUI as "Admin Custom Fields"
 participant Filter as "Menu Filter"
 participant DB as "Post Meta Store"
 WP->>Boot : Load plugin
-Boot->>AdminUI : Register admin fields
+Boot->>AdminUI : Register admin fields (nav-menus only)
 AdminUI->>DB : Save visibility settings (post meta)
 WP->>Filter : Render menu (wp_nav_menu_objects)
 Filter->>DB : Read login state, mode, roles (per item)
@@ -87,16 +95,16 @@ Filter->>WP : Return filtered items
 ```
 
 **Diagram sources**
-- [hide-menu-items-by-role.php:44-49](file://hide-menu-items-by-role.php#L44-L49)
-- [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
+- [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
+- [custom-fields.php:72-126](file://includes/admin/custom-fields.php#L72-L126)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
 
 ## Detailed Component Analysis
 
 ### Menu Filtering Pipeline
 The core filtering function runs on every menu render. It:
 - Reads the current menu ID from args.
-- Gets the current user’s roles (or treats guests as a single role).
+- Gets the current user's roles (or treats guests as a single role).
 - Iterates over all menu items.
 - Applies early-exit logic based on login state.
 - Reads per-item meta for roles, mode, and login state.
@@ -125,10 +133,10 @@ NextItem --> End(["Return filtered items"])
 ```
 
 **Diagram sources**
-- [functions.php:2-48](file://includes/functions.php#L2-L48)
+- [functions.php:2-54](file://includes/functions.php#L2-L54)
 
 **Section sources**
-- [functions.php:2-48](file://includes/functions.php#L2-L48)
+- [functions.php:2-54](file://includes/functions.php#L2-L54)
 
 ### Admin Custom Fields and Persistence
 The admin panel adds:
@@ -156,33 +164,37 @@ AdminFields --> PostMeta : "reads/writes"
 ```
 
 **Diagram sources**
-- [custom-fields.php:3-94](file://includes/admin/custom-fields.php#L3-L94)
-- [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
+- [custom-fields.php:3-72](file://includes/admin/custom-fields.php#L3-L72)
+- [custom-fields.php:75-126](file://includes/admin/custom-fields.php#L75-L126)
 
 **Section sources**
-- [custom-fields.php:3-94](file://includes/admin/custom-fields.php#L3-L94)
-- [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
+- [custom-fields.php:3-72](file://includes/admin/custom-fields.php#L3-L72)
+- [custom-fields.php:75-126](file://includes/admin/custom-fields.php#L75-L126)
 
-### Plugin Bootstrap and Asset Loading
-The bootstrap file:
-- Defines plugin constants.
-- Enqueues CSS/JS only on the nav-menus admin page.
-- Includes core files.
-- Initializes the plugin via plugins_loaded.
+### Enhanced Asset Management and Cache-Busting
+The bootstrap file now implements advanced asset management with:
+- Screen-specific loading: Assets only enqueue on nav-menus.php page
+- File modification time-based cache-busting: Uses `filemtime()` for automatic versioning
+- Fallback versioning: Falls back to plugin version when files don't exist
+- Conditional script loading: Scripts loaded in footer for optimal performance
 
 ```mermaid
 flowchart TD
 Init["plugins_loaded"] --> IncludeFiles["Include functions.php and custom-fields.php"]
 AdminEnqueue["admin_enqueue_scripts"] --> CheckScreen{"Screen == nav-menus?"}
-CheckScreen --> |Yes| EnqueueAssets["Enqueue admin CSS/JS"]
+CheckScreen --> |Yes| GetFileTimes["Get file modification times"]
 CheckScreen --> |No| Skip["Skip enqueue"]
+GetFileTimes --> EnqueueAssets["Enqueue CSS/JS with cache-busting"]
+EnqueueAssets --> FooterLoad["Load scripts in footer"]
 ```
 
+**Updated** Enhanced asset management now uses file modification times for proper cache-busting and loads assets only on the nav-menus.php page for improved performance.
+
 **Diagram sources**
-- [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
+- [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
 
 **Section sources**
-- [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
+- [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
 
 ## Dependency Analysis
 - The bootstrap depends on WordPress hooks and loads the core logic and admin fields.
@@ -204,34 +216,34 @@ Admin --> Meta
 ```
 
 **Diagram sources**
-- [hide-menu-items-by-role.php:44-49](file://hide-menu-items-by-role.php#L44-L49)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
-- [custom-fields.php:1-147](file://includes/admin/custom-fields.php#L1-L147)
+- [hide-menu-items-by-role.php:49-58](file://hide-menu-items-by-role.php#L49-L58)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
+- [custom-fields.php:1-126](file://includes/admin/custom-fields.php#L1-L126)
 
 **Section sources**
-- [hide-menu-items-by-role.php:44-49](file://hide-menu-items-by-role.php#L44-L49)
-- [functions.php:1-50](file://includes/functions.php#L1-L50)
-- [custom-fields.php:1-147](file://includes/admin/custom-fields.php#L1-L147)
+- [hide-menu-items-by-role.php:49-58](file://hide-menu-items-by-role.php#L49-L58)
+- [functions.php:1-56](file://includes/functions.php#L1-L56)
+- [custom-fields.php:1-126](file://includes/admin/custom-fields.php#L1-L126)
 
 ## Performance Considerations
 
 ### Menu Filtering Process and Its Impact
 - The filter runs on every menu render, iterating all items and reading post meta for each.
 - For large menus with many items, this can cause repeated meta reads and CPU overhead due to per-item decisions.
-- Early login-state checks reduce work when the rule is “logged-out only,” but role-based checks still occur for other cases.
+- Early login-state checks reduce work when the rule is "logged-out only," but role-based checks still occur for other cases.
 
 Optimization levers:
 - Minimize the number of menu items that require role checks.
-- Prefer “logged-out only” rules where possible to short-circuit role evaluation.
+- Prefer "logged-out only" rules where possible to short-circuit role evaluation.
 - Keep role lists concise and avoid excessive combinations.
 
 **Section sources**
-- [functions.php:2-48](file://includes/functions.php#L2-L48)
-- [README.txt:55-62](file://README.txt#L55-L62)
+- [functions.php:2-54](file://includes/functions.php#L2-L54)
+- [README.txt:75-75](file://README.txt#L75-L75)
 
 ### Strategies for Large Menus with Many Visibility Rules
 - Consolidate rules: group similar items under shared roles to reduce unique configurations.
-- Use “logged-out only” where feasible to bypass role checks.
+- Use "logged-out only" where feasible to bypass role checks.
 - Limit the number of roles per item; fewer roles mean faster intersection checks.
 - Avoid deep nested menus if they increase iteration overhead significantly.
 - Precompute common role sets at runtime if you extend the plugin (e.g., cache user role sets per request).
@@ -255,8 +267,22 @@ Implementation hints:
 - Invalidate caches on menu updates (on wp_update_nav_menu_item).
 
 **Section sources**
-- [functions.php:12-36](file://includes/functions.php#L12-L36)
-- [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
+- [functions.php:12-49](file://includes/functions.php#L12-L49)
+- [custom-fields.php:75-126](file://includes/admin/custom-fields.php#L75-L126)
+
+### Enhanced Asset Loading Performance
+The plugin now implements optimized asset loading strategies:
+- **Screen-specific loading**: Assets only load on nav-menus.php page, reducing unnecessary HTTP requests on other admin pages.
+- **Cache-busting with file modification times**: Automatic versioning ensures browsers always load updated assets after plugin updates.
+- **Conditional script loading**: JavaScript files load in the footer for optimal page load performance.
+
+Benefits:
+- Reduced bandwidth usage by loading assets only when needed
+- Improved browser caching efficiency with proper version control
+- Faster admin interface response times by avoiding unnecessary asset loading
+
+**Section sources**
+- [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
 
 ### Performance Monitoring Techniques and Identifying Bottlenecks
 - Enable WordPress debug logging to capture slow queries and hook execution times.
@@ -264,6 +290,7 @@ Implementation hints:
   - High frequency of get_post_meta calls
   - Long-running loops in menu filters
   - Excessive memory usage during menu rendering
+  - Unnecessary asset loading on non-nav-menus pages
 - Add timing markers around the filter to measure per-menu cost.
 - Track the number of items processed and meta reads per menu render.
 
@@ -278,11 +305,12 @@ Implementation hints:
 [No sources needed since this section provides general guidance]
 
 ### Best Practices for High-Traffic Sites
-- Favor simple rules: “logged-out only” where applicable to skip role checks.
+- Favor simple rules: "logged-out only" where applicable to skip role checks.
 - Reduce the total number of menu items and simplify hierarchy.
 - Use object caching for role-to-menu mappings and precomputed visibility flags.
 - Ensure theme renders menus efficiently (avoid redundant menu builds).
 - Monitor and alert on spikes in menu render time and memory usage.
+- Leverage screen-specific asset loading to minimize unnecessary resource consumption.
 
 [No sources needed since this section provides general guidance]
 
@@ -293,36 +321,43 @@ Implementation hints:
 - Balancing act: design rules to minimize per-item complexity while preserving required visibility semantics.
 
 **Section sources**
-- [functions.php:15-44](file://includes/functions.php#L15-L44)
-- [README.txt:48-62](file://README.txt#L48-L62)
+- [functions.php:15-50](file://includes/functions.php#L15-L50)
+- [README.txt:60-75](file://README.txt#L60-L75)
 
 ## Troubleshooting Guide
 Symptoms and resolutions:
 - Slow menu rendering:
   - Check for excessive menu items and deep nesting.
   - Review per-item role lists; reduce size and complexity.
-  - Validate that “logged-out only” is used where appropriate to bypass role checks.
+  - Validate that "logged-out only" is used where appropriate to bypass role checks.
 - Unexpected visibility:
   - Verify saved meta values for login state, mode, and roles.
   - Confirm current user roles match expectations.
 - High memory usage:
   - Inspect for large role arrays or duplicated data structures.
   - Ensure caches are properly scoped and cleared on updates.
+- Asset loading issues:
+  - Verify assets only load on nav-menus.php page.
+  - Check file modification times for proper cache-busting.
+  - Clear browser cache if styles/scripts appear outdated.
 
 Validation steps:
 - Inspect post meta for a sample menu item to confirm stored values.
 - Temporarily disable the filter to isolate whether slowness originates here.
 - Use profiling tools to pinpoint hotspots in the filter loop.
+- Check network tab to verify asset loading only occurs on nav-menus.php.
 
 **Section sources**
-- [functions.php:2-48](file://includes/functions.php#L2-L48)
-- [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
+- [functions.php:2-54](file://includes/functions.php#L2-L54)
+- [custom-fields.php:75-126](file://includes/admin/custom-fields.php#L75-L126)
+- [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
 
 ## Conclusion
-The Hide Menu Items by Role plugin integrates cleanly with WordPress to control menu visibility. For optimal performance:
-- Leverage early-exit logic by using “logged-out only” rules where possible.
+The Hide Menu Items by Role plugin integrates cleanly with WordPress to control menu visibility. Recent enhancements include optimized asset management with proper cache-busting and screen-specific loading. For optimal performance:
+- Leverage early-exit logic by using "logged-out only" rules where possible.
 - Optimize meta access through batching and caching.
 - Keep role configurations minimal and well-scoped.
+- Benefit from enhanced asset loading that only runs on nav-menus.php page.
 - Monitor performance continuously and adjust rules and caching strategies accordingly.
 These practices balance flexibility with efficiency, ensuring responsive menus even under heavy traffic.
 
@@ -331,8 +366,9 @@ These practices balance flexibility with efficiency, ensuring responsive menus e
 ## Appendices
 
 ### Key Implementation Paths
-- Menu filter entry point: [functions.php:2-48](file://includes/functions.php#L2-L48)
-- Admin field rendering and saving: [custom-fields.php:3-94](file://includes/admin/custom-fields.php#L3-L94), [custom-fields.php:96-146](file://includes/admin/custom-fields.php#L96-L146)
-- Plugin bootstrap and includes: [hide-menu-items-by-role.php:16-49](file://hide-menu-items-by-role.php#L16-L49)
+- Menu filter entry point: [functions.php:2-54](file://includes/functions.php#L2-L54)
+- Admin field rendering and saving: [custom-fields.php:3-72](file://includes/admin/custom-fields.php#L3-L72), [custom-fields.php:75-126](file://includes/admin/custom-fields.php#L75-L126)
+- Enhanced asset management with cache-busting: [hide-menu-items-by-role.php:21-46](file://hide-menu-items-by-role.php#L21-L46)
+- Plugin bootstrap and includes: [hide-menu-items-by-role.php:49-58](file://hide-menu-items-by-role.php#L49-L58)
 
 [No sources needed since this section references already analyzed files]

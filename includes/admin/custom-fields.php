@@ -1,11 +1,18 @@
 <?php
+// Prevent direct access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 // Add a custom field for "user role" to the WordPress menu
 function hmi_custom_menu_item_fields($id, $item, $depth, $args)
 {
     // Get saved values for new fields
     $login_state = get_post_meta($id, '_hmibr_login_state', true) ?: 'any';
     $mode = get_post_meta($id, '_hmibr_mode', true);
-    $roles = wp_roles()->get_names();
+    // Only list the roles this user is allowed to assign, which is the same set the
+    // save handler validates against.
+    $roles = get_editable_roles();
     $saved_roles = (array) get_post_meta($id, '_menu_item_user_roles', true);
 
     // "Show to all roles" is the default for new items. Items that already have
@@ -13,6 +20,10 @@ function hmi_custom_menu_item_fields($id, $item, $depth, $args)
     if (!$mode) {
         $mode = empty($saved_roles) ? 'all' : 'hide';
     }
+
+    // A role rule does nothing until at least one role is picked, and the item stays
+    // visible to everyone. Warn about it whenever the rule is actually in play.
+    $show_no_roles_hint = ($mode !== 'all' && $login_state !== 'logged_out' && empty($saved_roles));
 ?>
     <!-- Audience Panel -->
     <details class="hmibr-panel" open>
@@ -60,10 +71,13 @@ function hmi_custom_menu_item_fields($id, $item, $depth, $args)
                     <?php foreach ($roles as $key => $role) : ?>
                         <label class="hmibr-role">
                             <input type="checkbox" id="edit-menu-item-user-roles-<?php echo esc_attr($id) . '-' . esc_attr($key); ?>" class="widefat code edit-menu-item-custom" name="menu-item-user-roles[<?php echo esc_attr($id); ?>][]" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $saved_roles)); ?>>
-                            <span class="hmibr-role__name"><?php echo esc_html($role); ?></span>
+                            <span class="hmibr-role__name"><?php echo esc_html($role['name']); ?></span>
                         </label>
                     <?php endforeach; ?>
                 </div>
+                <p class="hmibr-hint" id="edit-menu-item-user-roles-hint-<?php echo esc_attr($id); ?>" role="status"<?php echo $show_no_roles_hint ? '' : ' hidden'; ?>>
+                    <?php _e('No roles selected. This menu item will remain visible to all roles until you select at least one.', 'hmibyrole'); ?>
+                </p>
             </div>
         </div>
     </details>
@@ -76,29 +90,34 @@ function hmi_save_custom_menu_item_fields($menu_id, $menu_item_db_id, $menu_item
 {
     // Sanitize the menu item's user roles
     if (isset($_POST['menu-item-user-roles'][$menu_item_db_id])) {
-        $user_roles = $_POST['menu-item-user-roles'][$menu_item_db_id];
+        $user_roles = wp_unslash((array) $_POST['menu-item-user-roles'][$menu_item_db_id]);
         $user_roles = array_map('sanitize_text_field', $user_roles);
     } else {
         $user_roles = array();
     }
 
-    // Validate the menu item's user roles
+    // Validate against the roles this user is allowed to assign. An invalid value
+    // skips the role list only, so the other settings on this item still save.
     $editable_roles = get_editable_roles();
+    $roles_valid = true;
     foreach ($user_roles as $role) {
         if (!array_key_exists($role, $editable_roles)) {
-            $messages[] = __('Error: Invalid user role selected.', ' hmibyrole');
+            $roles_valid = false;
             break;
         }
     }
 
-    // If there are error messages, add them to the settings error message stack
-    if (!empty($messages)) {
-        add_settings_error('menu_editor', 'menu_editor_error', implode('<br>', $messages), 'error');
-        return;
+    if ($roles_valid) {
+        // Save the user roles
+        update_post_meta($menu_item_db_id, '_menu_item_user_roles', $user_roles);
+    } else {
+        add_settings_error(
+            'menu_editor',
+            'menu_editor_error',
+            __('Error: Invalid user role selected.', 'hmibyrole'),
+            'error'
+        );
     }
-
-    //save the user roles
-    update_post_meta($menu_item_db_id, '_menu_item_user_roles', $user_roles);
 
     // Save the menu item's menu ID and menu name
     update_post_meta($menu_item_db_id, '_menu_item_menu_id', $menu_id);
@@ -107,7 +126,7 @@ function hmi_save_custom_menu_item_fields($menu_id, $menu_item_db_id, $menu_item
     // Save hmibr_login_state field
     $allowed_login_states = ['any', 'logged_in', 'logged_out'];
     $login_state = isset($_POST['hmibr_login_state'][$menu_item_db_id])
-        ? sanitize_key($_POST['hmibr_login_state'][$menu_item_db_id])
+        ? sanitize_key(wp_unslash($_POST['hmibr_login_state'][$menu_item_db_id]))
         : 'any';
     $login_state = in_array($login_state, $allowed_login_states, true) ? $login_state : 'any';
     update_post_meta($menu_item_db_id, '_hmibr_login_state', $login_state);
@@ -116,7 +135,7 @@ function hmi_save_custom_menu_item_fields($menu_id, $menu_item_db_id, $menu_item
     // not submitted, e.g. when an item is created through the add-menu-item request.
     if (isset($_POST['hmibr_mode'][$menu_item_db_id])) {
         $allowed_modes = ['all', 'hide', 'show'];
-        $mode = sanitize_key($_POST['hmibr_mode'][$menu_item_db_id]);
+        $mode = sanitize_key(wp_unslash($_POST['hmibr_mode'][$menu_item_db_id]));
         $mode = in_array($mode, $allowed_modes, true) ? $mode : 'hide';
         update_post_meta($menu_item_db_id, '_hmibr_mode', $mode);
     }
