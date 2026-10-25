@@ -1,0 +1,1 @@
+Requires WordPress ≥ 5.0 and PHP ≥ 7.0 (declared in plugin header and README). No build step — install by dropping the directory into `/wp-content/plugins/` and activating from the Plugins screen.

@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: ""
+title: Hide Menu Items by Role WordPress Plugin
+scope:
+    - assets/
+    - includes/
+    - .gitignore
+    - README.txt
+    - hide-menu-items-by-role.php
+source_files: []
+depends_on: []
+related_to: []

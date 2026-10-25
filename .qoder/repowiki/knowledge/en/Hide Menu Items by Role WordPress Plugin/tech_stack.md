@@ -1,0 +1,1 @@
+PHP plugin using WordPress core hooks (`wp_nav_menu_objects`, `wp_nav_menu_item_custom_fields`, `wp_update_nav_menu_item`, `admin_enqueue_scripts`); jQuery dependency for the admin field interactivity; SVG icons inline in PHP templates.

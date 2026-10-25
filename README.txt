@@ -13,9 +13,10 @@ An enhanced WordPress plugin to hide or show menu items based on user roles and 
 
 This plugin allows you to control menu item visibility based on user roles and login status. You can:
 
-1. Hide menu items from specific user roles (original functionality)
-2. Show menu items only to specific user roles (new "show" mode)
-3. Control visibility based on login status (Everyone, Logged-in only, Logged-out only)
+1. Show menu items to everyone, ignoring role rules (default "show to all" mode)
+2. Hide menu items from specific user roles
+3. Show menu items only to specific user roles
+4. Control visibility based on login status (Everyone, Logged-in only, Logged-out only)
 
 The plugin uses WordPress core filters, so no JavaScript or jQuery is required.
 
@@ -25,8 +26,8 @@ The plugin uses WordPress core filters, so no JavaScript or jQuery is required.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Create or edit a menu item, and configure the visibility settings:
    - Select which user roles should affect visibility
-   - Choose between "Hide from these roles" or "Show only to these roles"
-   - Set login state visibility (Everyone, Logged-in only, Logged-out only)
+   - Choose "Show to all roles" (default), "Hide for selected roles", or "Show only to selected roles"
+   - Set user status visibility (Everyone, Logged-in only, Logged-out only)
 4. Save your menu.
 
 == Frequently Asked Questions ==
@@ -35,8 +36,8 @@ The plugin uses WordPress core filters, so no JavaScript or jQuery is required.
 
 When you create or edit a menu item, new fields will appear where you can:
 1. Select which user roles should affect visibility
-2. Choose between "Hide from these roles" (default) or "Show only to these roles"
-3. Set login state visibility:
+2. Choose "Show to all roles" (default), "Hide for selected roles", or "Show only to selected roles"
+3. Set user status visibility:
    - Everyone (no restriction)
    - Logged-out users only
    - Logged-in users only
@@ -45,28 +46,29 @@ When you create or edit a menu item, new fields will appear where you can:
 
 Yes, you can select multiple user roles that should be affected by the visibility rules.
 
-= What's the difference between "Hide from these roles" and "Show only to these roles"? =
+= What do the role visibility modes do? =
 
-- "Hide from these roles": Menu item is visible to everyone EXCEPT the selected roles (original behavior)
-- "Show only to these roles": Menu item is visible ONLY to the selected roles (new behavior)
+- "Show to all roles" (default): Menu item is visible to everyone; role rules are ignored and the role checkboxes are disabled
+- "Hide for selected roles": Menu item is visible to everyone EXCEPT the selected roles (original behavior)
+- "Show only to selected roles": Menu item is visible ONLY to the selected roles
   
-  Note: When using "Show only to these roles", if no roles are selected, the item will be visible to everyone (to avoid accidentally hiding items during setup).
+  Note: When using "Show only to selected roles", if no roles are selected, the item will be visible to everyone (to avoid accidentally hiding items during setup).
 
-= How does the login state visibility work? =
+= How does the user status visibility work? =
 
-The login state setting works independently of role-based rules:
+The user status setting works independently of role-based rules:
 - Everyone: No restriction based on login status
 - Logged-out users only: Item is only visible to visitors who are not logged in
 - Logged-in users only: Item is only visible to users who are logged in
 
-If the login state rule is set to 'Logged-out users only', the role-based rules are not checked (for performance).
+If the user status rule is set to 'Logged-out users only', the role-based rules are not checked (for performance).
 
 = How do I change the visibility settings for a menu item? =
 
 When you create or edit a menu item, the visibility fields will appear where you can modify:
 - The selected user roles
-- The visibility mode (hide/show)
-- The login state setting
+- The role visibility mode (show to all / hide for selected roles / show only to selected roles)
+- The user status setting
 
 == Screenshots ==
 

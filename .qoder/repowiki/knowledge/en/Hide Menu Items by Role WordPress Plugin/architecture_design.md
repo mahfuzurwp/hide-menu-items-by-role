@@ -1,0 +1,4 @@
+Single-plugin layout rooted at `hide-menu-items-by-role.php`, which defines plugin headers, two constants (`HMI_PLUGIN_DIR`, `HMI_PLUGIN_URL`), enqueues admin assets only on the `nav-menus` screen, and bootstraps two sub-modules via `require_once`:
+- `includes/functions.php` — registers `wp_nav_menu_objects` filter to prune menu items based on post meta `_hmibr_login_state`, `_menu_item_user_roles`, and `_hmibr_mode`.
+- `includes/admin/custom-fields.php` — hooks into `wp_nav_menu_item_custom_fields` to render a collapsible 'Audience Visibility' panel (login-state select, hide/show mode select, role checkboxes) and into `wp_update_nav_menu_item` to persist those values as post meta.
+Frontend assets live under `assets/css/hmibr-admin.css` and `assets/js/hmibr-admin.js`, loaded only for the nav-menus admin screen; no public-facing JS is shipped. Dependency direction is one-way: the root file loads both includes; the includes never load each other or the root.

@@ -23,18 +23,22 @@ function hmi_enqueue_admin_assets() {
     
     // Only enqueue on nav-menus.php page
     if (is_object($screen) && $screen->id === 'nav-menus') {
+        $css_file = HMI_PLUGIN_DIR . 'assets/css/hmibr-admin.css';
+        $js_file  = HMI_PLUGIN_DIR . 'assets/js/hmibr-admin.js';
+
         wp_enqueue_style(
             'hmibr-admin-style',
             HMI_PLUGIN_URL . 'assets/css/hmibr-admin.css',
             array(),
-            '2.0.0'
+            // Use the file modification time so browser caches refresh after updates.
+            file_exists($css_file) ? (string) filemtime($css_file) : '2.0.0'
         );
         
         wp_enqueue_script(
             'hmibr-admin-script',
             HMI_PLUGIN_URL . 'assets/js/hmibr-admin.js',
             array('jquery'),
-            '2.0.0',
+            file_exists($js_file) ? (string) filemtime($js_file) : '2.0.0',
             true
         );
     }

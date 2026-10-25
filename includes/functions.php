@@ -31,6 +31,12 @@ function hmi_hide_menu_items_based_on_role($items, $args)
         
         // 3. Read mode and apply hide/show logic
         $mode = get_post_meta($item_id, '_hmibr_mode', true) ?: 'hide';
+        
+        // 'all' shows the item to everyone, so role rules are skipped
+        if ($mode === 'all') {
+            continue;
+        }
+        
         $user_roles_array = is_array($user_roles) ? $user_roles : [];
         $roles_array = is_array($roles) ? $roles : [];
         $has_overlap = (bool) array_intersect($user_roles_array, $roles_array);
