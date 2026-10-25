@@ -1,6 +1,6 @@
 === Hide Menu Items by Role ===
 Contributors: @mahfuzurwp
-Tags: menu, navigation, user roles, hide menu items, show menu items, menu visibility, role based menu, conditional menu items, restrict menu items, logged in users
+Tags: menu, navigation, user roles, hide menu items, menu visibility
 Requires at least: 5.0
 Tested up to: 7.1.3
 Stable tag: 2.1.0

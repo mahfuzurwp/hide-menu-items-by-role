@@ -1,4 +1,4 @@
 - Per-menu-item configuration is persisted as post meta on the menu item post, using underscore-prefixed keys (`_hmibr_login_state`, `_hmibr_mode`, `_menu_item_user_roles`).
-- User-supplied POST values are whitelisted against explicit allow-lists before being saved (e.g. `allowed_login_states = ['any','logged_in','logged_out']`, `allowed_modes = ['hide','show']`) rather than accepted raw.
+- User-supplied POST values are whitelisted against explicit allow-lists before being saved (e.g. `allowed_login_states = ['any','logged_in','logged_out']`, `allowed_modes = ['all','hide','show']`) rather than accepted raw.
 - Admin-only assets are gated by checking `$screen->id === 'nav-menus'` inside an `admin_enqueue_scripts` callback, so styles/scripts never load on unrelated admin pages.
 - Internationalized strings use WordPress `_e()` / `__()` with the shared text domain `hmibyrole`.
